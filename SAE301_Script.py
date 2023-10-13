@@ -50,16 +50,14 @@ def on_message(client, userdata, msg):
         except ValueError:
             formatted_data_store[i].append(item)
     print(f"Message received: {data}")
-    print(formatted_data_store)
 
     mySql_insert_query = f"""
     INSERT INTO Informations 
-    (id, Prise1, Prise2, StartPlage1, EndPlage1, StartPlage2, EndPlage2, Capteur1, Capteur2) 
+    (Prise1, Prise2, StartPlage1, EndPlage1, StartPlage2, EndPlage2, Capteur1, Capteur2) 
     VALUES 
-    ({i}, {formatted_data_store[i][0]}, {formatted_data_store[i][1]}, 
-    {formatted_data_store[i][2]}, {formatted_data_store[i][3]}, {formatted_data_store[i][4]}, 
-    {formatted_data_store[i][5]}, {formatted_data_store[i][6]}, {formatted_data_store[i][7]}, 
-    {formatted_data_store[i][8]})
+    ('{formatted_data_store[i][0]}', '{formatted_data_store[i][1]}', 
+    '{formatted_data_store[i][2]}', '{formatted_data_store[i][3]}', '{formatted_data_store[i][4]}', 
+    '{formatted_data_store[i][5]}', '{formatted_data_store[i][6]}', '{formatted_data_store[i][7]}')
     """
     
     cursor.execute(mySql_insert_query)
@@ -78,17 +76,25 @@ def heure():
     ORDER BY id DESC LIMIT 1"""            
 
     cursor.execute(mySql_pull_query)
-    hours = cursor.fetchone()
+    hours_tuple = cursor.fetchone()
 
-    if hours is not None:
-        StartPlage1, EndPlage1, StartPlage2, EndPlage2 = hours
+    if hours_tuple is not None and (hours_tuple[0] != None) and (hours_tuple[1] != None) and (hours_tuple[2] != None) and (hours_tuple[3] != None):
+        hours = ""
+        for element in hours_tuple:
+            hours = hours + str(element) + ";"
 
-        if current_time > StartPlage1.strftime('%H:%M:%S') and current_time < EndPlage1.strftime('%H:%M:%S'):
+        hours_store = [a for a in hours.split(";")]
+        StartPlage1 = hours_store[0]
+        EndPlage1 = hours_store[1]
+        StartPlage2 = hours_store[2]
+        EndPlage2 = hours_store[3]
+
+        if current_time > StartPlage1 and current_time < EndPlage1:
             hour1 = "YES"
         else:
             hour1 = "NO"
 
-        if current_time > StartPlage2.strftime('%H:%M:%S') and current_time < EndPlage2.strftime('%H:%M:%S'):
+        if current_time > StartPlage2 and current_time < EndPlage2:
             hour2 = "YES"
         else:
             hour2 = "NO"
@@ -107,7 +113,7 @@ def main():
     try:
         while True:
             heure()
-            client.publish(topic_infos, "OFF;OFF;None;None;None;None")
+            client.publish(topic_infos, "OFF;OFF;10:30:15;11:0:0;16:5:0;20:15:7;0;0")
             time.sleep(5)
     except KeyboardInterrupt:
         pass
