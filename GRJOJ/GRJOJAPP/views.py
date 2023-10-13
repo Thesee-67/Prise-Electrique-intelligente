@@ -7,3 +7,9 @@ def index(request):
 
 def capteur(request):
     return render(request, 'GRJOJAPP/Capteur_temperature/capteur.html')
+
+def plage(request):
+    return render(request, 'GRJOJAPP/plage_horaires/plage_horaire.html')
+
+def etat(request):
+    return render(request, 'GRJOJAPP/etat_prise/etat.html')
