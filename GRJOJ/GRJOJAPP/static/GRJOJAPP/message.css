@@ -1,0 +1,34 @@
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .alert-success {
+    background-color: white;
+    color: green;
+    border-color: whitesmoke;
+  }
+  
+  .alert-info {
+    background-color: white;
+    color: blue;
+    border-color: whitesmoke;
+  }
+  
+  .alert-warning {
+    background-color: white;
+    color: lightsalmon;
+    border-color: whitesmoke;
+  }
+  
+  .alert-danger {
+    background-color: white;
+    color: darkred;
+    border-color: whitesmoke;
+  }
+  
+
+  

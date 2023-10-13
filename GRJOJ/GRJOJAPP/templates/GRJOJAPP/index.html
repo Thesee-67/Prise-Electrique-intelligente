@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+
+{% block title %}
+    Menu de la Prise WIFI Intelligente
+{% endblock %}
+
+{% block content %}
+    <main>
+        <h2>Bienvenue dans le Menu de la Prise WIFI Intelligente</h2>
+        <p>Sélectionnez une option dans le menu ci-dessus pour commencer.</p>
+        <p></p>
+        {% load static %}
+        <img id=fond src="{%static '/GRJOJAPP/image/prise.jpg'%}" alt="Image prise">
+    </main>
+{% endblock %}

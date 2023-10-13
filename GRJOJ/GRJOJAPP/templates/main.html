@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    {% block css %}
+    {% endblock %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/index.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/message.css'%}">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+</head>
+
+<body>
+    <header>
+        {% block header%}
+            <h1>Prise Connecté Intelligente Wifi</h1>
+        {% endblock %}
+    </header>
+    
+    {% block sidebar %}
+        <nav>
+            <ul>
+                <li><a href="/GRJOJAPP/index">Accueil</a></li>
+            </ul>
+          </nav>
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% block content2 %}
+    {% endblock %}
+
+</body>
+
+</html>

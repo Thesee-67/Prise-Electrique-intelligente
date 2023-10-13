@@ -1,0 +1,6 @@
+img[type="image"] {
+    max-width: 200px; /* Définir la largeur maximale souhaitée */
+    max-height: 200px; /* Définir la hauteur maximale souhaitée */
+    object-fit: contain; /* Ajuster l'image à l'intérieur du cadre tout en conservant les proportions */
+  }
+  
