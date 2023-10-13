@@ -1,0 +1,7 @@
+Nom d'hote: toto.local
+SSH: nom d'utilisateur:toto
+     mot de passe: toto
+Wifi: ssid : Hello
+      mot de passe : Bonjour*'
+
+OS: Rasberry PI OS Full( dernière version)

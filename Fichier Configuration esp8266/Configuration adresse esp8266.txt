@@ -1,0 +1,2 @@
+adresse ip 192.168.72.13
+adresse mac: 5C:CF:7F:3A:66:C3
