@@ -6,7 +6,8 @@
     {% endblock %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/index.css'%}">
-    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/message.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/image.css'%}">
+    <link rel="shortcut icon" type="image/jpeg" href="{%static '/GRJOJAPP/image/prise.jpg'%}" >
     <title>
         {% block title %}
         {% endblock %}
@@ -24,6 +25,8 @@
         <nav>
             <ul>
                 <li><a href="/GRJOJAPP/index">Accueil</a></li>
+                <li><a href="/GRJOJAPP/Capteur_temperature/capteur">Capteur</a></li>
+
             </ul>
           </nav>
     {% endblock %}

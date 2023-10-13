@@ -4,3 +4,6 @@ from django.http import HttpResponse
 
 def index(request):
     return render(request, 'GRJOJAPP/index.html')
+
+def capteur(request):
+    return render(request, 'GRJOJAPP/Capteur_temperature/capteur.html')
