@@ -1,0 +1,19 @@
+create database SAE301;
+use SAE301;
+
+create table Informations(
+id int auto_increment,
+primary key(id),
+Prise1 varchar(3),
+Prise2 varchar(3),
+StartPlage1 time,
+EndPlage1 time,
+StartPlage2 time,
+EndPlage2 time,
+Capteur1 float(3,2),
+Capteur2 float(3,2)
+);
+
+create user 'client'@'%' identified by 'secret';
+
+grant all privileges on SAE301.* to 'client'@'%' identified by 'secret';
