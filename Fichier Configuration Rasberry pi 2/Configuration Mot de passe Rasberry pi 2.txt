@@ -5,3 +5,6 @@ Wifi: ssid : Hello
       mot de passe : Bonjour*'
 
 OS: Rasberry PI OS Full( dernière version)
+
+mqtt voir réponse:Commande
+mosquitto_sub -h localhost -t grjoj_infos -u "toto" -P "toto"
