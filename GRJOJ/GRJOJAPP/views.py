@@ -92,25 +92,25 @@ def plage_horaire(request):
             start_time = request.POST.get('start_time')
             end_time = request.POST.get('end_time')
             
+            # Vérification de l'état actuel de la prise
+            if informations.prise1 == "ON":
+                informations.prise1 = "ON"
+            if informations.prise2 == "ON":
+                informations.prise2 = "ON"
+
             # Le reste de votre code ici
             client.publish(topic_infos, f"{start_time};{end_time}")
             time.sleep(1)
             
             # Vérification de l'heure actuelle pour activer/désactiver les prises
             current_time = datetime.now().time()
-            informations = Informations.objects.first()
             plage_horaire_prise1 = (informations.startplage1, informations.endplage1)
             plage_horaire_prise2 = (informations.startplage2, informations.endplage2)
 
             if plage_horaire_prise1[0] <= current_time <= plage_horaire_prise1[1]:
                 informations.prise1 = "ON"
-            else:
-                informations.prise1 = "OFF"
-
             if plage_horaire_prise2[0] <= current_time <= plage_horaire_prise2[1]:
                 informations.prise2 = "ON"
-            else:
-                informations.prise2 = "OFF"
 
             informations.save()
             client.publish(topic_infos, f"{start_time};{end_time}")
