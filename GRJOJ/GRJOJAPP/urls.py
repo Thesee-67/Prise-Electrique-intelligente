@@ -3,15 +3,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("index/", views.index),
+    path("index/", views.index, name='index'),
 
 #Capteur
-    path('Capteur_temperature/capteur/', views.capteur),
+    #path('capteur/', views.capteur),
 
 #Plage Horaires
-    path('plage_horaires/plage_horaire/', views.plage),
+    path('plage_horaire/', views.plage_horaire, name='plage_horaire'),
 
 #Commande Prise
-    path('etat_prise/etat/', views.etat),
+    path('prise/', views.select_prise, name='prise'),
 
 ]
