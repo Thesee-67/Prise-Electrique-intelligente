@@ -11,12 +11,7 @@
 {% block content %}
     <form method="post">
         {% csrf_token %}
-        <label for="start_time">Heure de début :</label>
-        <input type="time" name="start_time" id="start_time">
-        <br>
-        <label for="end_time">Heure de fin :</label>
-        <input type="time" name="end_time" id="end_time">
-        <br>
-        <input type="submit" value="Valider">
+        {{ form.as_p }}
+        <button type="submit">Valider</button>
     </form>
 {% endblock %}

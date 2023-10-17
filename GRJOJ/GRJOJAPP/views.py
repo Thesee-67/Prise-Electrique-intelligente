@@ -5,9 +5,8 @@ from datetime import datetime, time
 import paho.mqtt.client as mqtt
 import mysql.connector
 from mysql.connector import errorcode
-from datetime import datetime
+from .forms import PlageHoraireForm
 import time
-from datetime import time
 
 def index(request):
     # Récupérez l'état des prises 1 et 2 depuis la base de données
@@ -15,18 +14,19 @@ def index(request):
     prise1_state = informations.prise1 if informations.prise1 else "OFF"
     prise2_state = informations.prise2 if informations.prise2 else "OFF"
 
-    # Initialisez toutes les autres valeurs à "0"
-    other_values = "0:0:0;0:0:0;00,00;00,00"  # Modifier cela selon vos besoins
+    startplage1 = informations.startplage1 if informations.startplage1 else "00:00:00"
+    startplage2 = informations.startplage2 if informations.startplage2 else "00:00:00"
+    endplage1 = informations.endplage1 if informations.endplage1 else "00:00:00"
+    endplage2 = informations.endplage2 if informations.endplage2 else "00:00:00"
 
+    other_values = "00.0;00.0"
     # Formatez la réponse au format souhaité
-    response = f"{prise1_state};{prise2_state};{other_values}"
+    response = f"{prise1_state};{prise2_state};{startplage1};{startplage2};{endplage1};{endplage2};{other_values}"
 
     # Publiez la réponse au format MQTT
     client.publish(topic_modes, response)
 
-    return render(request, 'GRJOJAPP/index.html')
-
-
+    return render(request, 'GRJOJAPP/index.html', {'informations': informations})
 
 broker = '192.168.170.62'
 username = 'toto'
@@ -83,37 +83,40 @@ def select_prise(request):
     return render(request, 'GRJOJAPP/prise.html')
 
 def plage_horaire(request):
-    if request.method == 'POST':
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
-        informations = Informations.objects.first()
-        informations.startplage1 = start_time
-        informations.endplage1 = end_time
-        informations.save()
-
-
-        # Publish start_time and end_time to MQTT topic
-        client.publish(topic_infos, f"{start_time};{end_time}")
-        time.sleep(1)
-
-
-    # Vérification de l'heure actuelle pour activer/désactiver les prises
-    current_time = datetime.now().time()
     informations = Informations.objects.first()
-    plage_horaire_prise1 = (informations.startplage1, informations.endplage1)
-    plage_horaire_prise2 = (informations.startplage2, informations.endplage2)
+    form = PlageHoraireForm(request.POST or None, instance=informations)
 
-    if plage_horaire_prise1[0] <= current_time <= plage_horaire_prise1[1]:
-        informations.prise1 = "ON"
-    else:
-        informations.prise1 = "OFF"
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            start_time = request.POST.get('start_time')
+            end_time = request.POST.get('end_time')
+            
+            # Le reste de votre code ici
+            client.publish(topic_infos, f"{start_time};{end_time}")
+            time.sleep(1)
+            
+            # Vérification de l'heure actuelle pour activer/désactiver les prises
+            current_time = datetime.now().time()
+            informations = Informations.objects.first()
+            plage_horaire_prise1 = (informations.startplage1, informations.endplage1)
+            plage_horaire_prise2 = (informations.startplage2, informations.endplage2)
 
-    if plage_horaire_prise2[0] <= current_time <= plage_horaire_prise2[1]:
-        informations.prise2 = "ON"
-    else:
-        informations.prise2 = "OFF"
+            if plage_horaire_prise1[0] <= current_time <= plage_horaire_prise1[1]:
+                informations.prise1 = "ON"
+            else:
+                informations.prise1 = "OFF"
 
-    informations.save()
+            if plage_horaire_prise2[0] <= current_time <= plage_horaire_prise2[1]:
+                informations.prise2 = "ON"
+            else:
+                informations.prise2 = "OFF"
 
-    return render(request, 'GRJOJAPP/plage_horaire.html')
+            informations.save()
+            client.publish(topic_infos, f"{start_time};{end_time}")
+            
+            return redirect('index')
+
+    return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form})
+
 
