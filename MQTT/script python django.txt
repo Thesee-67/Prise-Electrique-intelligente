@@ -1,0 +1,31 @@
+broker = '192.168.170.62'
+username = 'toto'
+password = 'toto'
+port = 1883
+topic_infos = 'grjoj_infos'
+topic_heures = 'grjoj_heures'
+topic_reconnect = 'grjoj_reconnect'
+topic_modes = 'grjoj_mod'
+
+client = mqtt.Client()
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected to MQTT broker successfully")
+        client.subscribe(topic_modes)
+        client.subscribe(topic_reconnect)
+    else:
+        print(f"Connection failed with error code {rc}")
+
+def on_disconnect(client, userdata, rc):
+    print("\nDisconnected from MQTT broker")
+
+def initialize_mqtt():
+    client.on_connect = on_connect
+    client.on_disconnect = on_disconnect
+    client.username_pw_set(username, password)
+    client.connect(broker, port, 60)
+    client.loop_start()  # Démarrez la boucle MQTT en arrière-plan
+
+initialize_mqtt()
+

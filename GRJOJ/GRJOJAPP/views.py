@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from .models import Informations
-import paho.mqtt.client as mqtt
 from datetime import datetime, time
 import paho.mqtt.client as mqtt
 import mysql.connector
