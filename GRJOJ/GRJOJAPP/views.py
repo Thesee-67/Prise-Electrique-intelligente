@@ -75,8 +75,6 @@ def select_prise(request):
             informations.prise2 = "OFF"
         informations.save()
 
-        # Publish selected_prise to MQTT topic
-        client.publish(topic_modes, selected_prise)
 
         return redirect('index')
 
@@ -113,7 +111,6 @@ def plage_horaire(request):
                 informations.prise2 = "ON"
 
             informations.save()
-            client.publish(topic_infos, f"{start_time};{end_time}")
             
             return redirect('index')
 
