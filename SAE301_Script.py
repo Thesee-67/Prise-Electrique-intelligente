@@ -1,10 +1,11 @@
+#! /usr/bin/env python
+
 import paho.mqtt.client as mqtt
 import mysql.connector
 from mysql.connector import errorcode
 from datetime import datetime
 import time
 
-i = 0
 config = {
     'user':'client',
     'password':'secret',
@@ -23,10 +24,15 @@ except mysql.connector.Error as err:
     else:
         print(err)
 
-broker = 'test.mosquitto.org'
+broker = '192.168.170.62'
+username = 'toto'
+password = 'toto'
 port = 1883
 topic_infos = 'grjoj_infos'
+topic_mod = 'grjoj_mod'
 topic_heures = 'grjoj_heures'
+topic_capteurs = 'grjoj_capteurs'
+topic_reconnect = 'grjoj_reconnect'
 
 client = mqtt.Client()
 
@@ -34,34 +40,57 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT broker successfully")
         client.subscribe(topic_infos)
+        client.subscribe(topic_reconnect)
     else:
         print(f"Connection failed with error code {rc}")
 
 def on_message(client, userdata, msg):
-    global i
-    i += 1
+    topic = msg.topic
     data = msg.payload.decode()
-    data_store = [a for a in data.split(";")]
-    formatted_data_store = {}
-    formatted_data_store[i] = []
-    for item in data_store:
-        try:
-            formatted_data_store[i].append(float(item))
-        except ValueError:
-            formatted_data_store[i].append(item)
-    print(f"Message received: {data}")
+    if topic == topic_reconnect:
+        if data == "YES":
+            mySql_pull_query = """
+            SELECT Prise1, Prise2, StartPlage1, EndPlage1, StartPlage2, EndPlage2 
+            FROM Informations
+            ORDER BY id DESC LIMIT 1"""            
+            cursor.execute(mySql_pull_query)
+            infos = cursor.fetchone()
+            if infos != None:
+                client.publish(topic_mod, f"{infos}")
+            else:
+                client.publish(topic_mod, "OFF;OFF;0:0:0;0:0:0;0:0:0;0:0:0")
+            mySql_pull_query = """
+            SELECT Capteur1, Capteur2 
+            FROM Informations
+            ORDER BY id DESC LIMIT 1"""            
+            cursor.execute(mySql_pull_query)
+            infos = cursor.fetchone()
+            if infos != None:
+                client.publish(topic_capteurs, f"{infos}")
+            else:
+                client.publish(topic_capteurs, "00,0;00,0")
+    elif topic == topic_infos:
+        data_store = [a for a in data.split(";")]
+        formatted_data_store = []
+        for item in data_store:
+            try:
+                formatted_data_store.append(float(item))
+            except ValueError:
+                formatted_data_store.append(item)
 
-    mySql_insert_query = f"""
-    INSERT INTO Informations 
-    (Prise1, Prise2, StartPlage1, EndPlage1, StartPlage2, EndPlage2, Capteur1, Capteur2) 
-    VALUES 
-    ('{formatted_data_store[i][0]}', '{formatted_data_store[i][1]}', 
-    '{formatted_data_store[i][2]}', '{formatted_data_store[i][3]}', '{formatted_data_store[i][4]}', 
-    '{formatted_data_store[i][5]}', '{formatted_data_store[i][6]}', '{formatted_data_store[i][7]}')
-    """
-    
-    cursor.execute(mySql_insert_query)
-    mydb.commit()
+        if len(formatted_data_store) == 8:
+            print(f"Message received: {data}")
+            mySql_insert_query = f"""
+            INSERT INTO Informations 
+            (Prise1, Prise2, StartPlage1, EndPlage1, StartPlage2, EndPlage2, Capteur1, Capteur2) 
+            VALUES 
+            ('{formatted_data_store[0]}', '{formatted_data_store[1]}', 
+            '{formatted_data_store[2]}', '{formatted_data_store[3]}', '{formatted_data_store[4]}', 
+            '{formatted_data_store[5]}', '{formatted_data_store[6]}', '{formatted_data_store[7]}')
+            """
+            
+            cursor.execute(mySql_insert_query)
+            mydb.commit()
 
 def on_disconnect(client, userdata, rc):
     print("\nDisconnected from MQTT broker")
@@ -107,13 +136,13 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_disconnect = on_disconnect
+    client.username_pw_set(username, password)
     client.connect(broker, port, 60)
     client.loop_start()
 
     try:
         while True:
             heure()
-            client.publish(topic_infos, "OFF;OFF;10:30:15;11:0:0;16:5:0;20:15:7;0;0")
             time.sleep(5)
     except KeyboardInterrupt:
         pass
