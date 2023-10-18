@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
 </head>
-
 <body>
+    <h2>Connexion</h2>
     <form method="post">
         {% csrf_token %}
-        <h2>Connexion</h2>
-        <label for="username">Nom d'utilisateur :</label>
-        <input type="text" name="username" value="toto" required>
-        <label for="password">Mot de passe :</label>
-        <input type="password" name="password" value="toto" required>
-
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.password.label_tag }}
+        {{ form.password }}
         <button type="submit">Se connecter</button>
     </form>
 </body>

@@ -9,19 +9,25 @@ import time
 from django.http import HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
 
 def index(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+            if username == 'toto' and password == 'toto':
+                return redirect('acceuil')
+            else:
+                return HttpResponse('Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe.')
+    else:
+        form = LoginForm()
 
-        if username == 'toto' and password == 'toto':
-            return render(request, 'GRJOJAPP/acceuil.html')
-        else:
+    return render(request, 'GRJOJAPP/index.html', {'form': form})
 
-            return HttpResponse('Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe.')
-
-    return render(request, 'GRJOJAPP/index.html')
 
 def logout_view(request):
     if request.user.is_authenticated:
