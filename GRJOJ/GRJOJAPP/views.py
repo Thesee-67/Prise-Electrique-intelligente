@@ -6,6 +6,20 @@ import mysql.connector
 from mysql.connector import errorcode
 from .forms import PlageHoraireForm
 import time
+from django.http import HttpResponse
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if username == 'toto' and password == 'toto':
+            return redirect('index')
+        else:
+
+            return HttpResponse('Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe.')
+
+    return render(request, 'login.html')
 
 def index(request):
     # Récupérez l'état des prises 1 et 2 depuis la base de données

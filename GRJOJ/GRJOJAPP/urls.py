@@ -13,5 +13,5 @@ urlpatterns = [
 
 #Commande Prise
     path('prise/', views.select_prise, name='prise'),
-
+    path('login/', views.login_view, name='login'),
 ]

@@ -1,20 +1,22 @@
+html : 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
 </head>
+
 <body>
-    <h1>Connexion</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.username.label_tag }} {{ form.username }}
-        <br>
-        {{ form.password.label_tag }} {{ form.password }}
-        <br>
-        <input type="submit" value="Se connecter">
+        <h2>Connexion</h2>
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" name="username" value="toto" required>
+        <label for="password">Mot de passe :</label>
+        <input type="password" name="password" value="toto" required>
+
+        <button type="submit">Se connecter</button>
     </form>
-    {% if form.errors %}
-        <p>Erreur de connexion. Veuillez vérifier vos informations d'identification.</p>
-    {% endif %}
 </body>
 </html>
