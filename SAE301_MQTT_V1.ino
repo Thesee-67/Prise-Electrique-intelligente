@@ -20,28 +20,26 @@
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include <EEPROM.h>
-
-#define EEPROM_SIZE 12
 
 // Update these with values suitable for your network.
 
 const char* ssid = "Hello";
 const char* password = "Bonjour*'";
-const char* mqtt_server = "test.mosquitto.org";
+const char* mqtt_server = "192.168.170.62";
+const char* mqtt_username = "toto";
+const char* mqtt_password = "toto";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-unsigned long lastMsg = 0;
-#define MSG_BUFFER_SIZE	(50)
-char msg[MSG_BUFFER_SIZE];
+String msg;
+char msg_final[200];
 int value = 0;
 
-String outTopic = "grjoj_infoR";
-String inTopic = "grjoj_infoApp";
-
-String outTopic2 = "grjoj_heureR";
-String inTopic2 = "grjoj_heureS";
+const char* topic_infos = "grjoj_infos";
+const char* topic_mod = "grjoj_mod";
+const char* topic_heures = "grjoj_heures";
+const char* topic_capteurs = "grjoj_capteurs";
+const char* topic_reconnect = "grjoj_reconnect";
 
 String Prise1;
 String Prise2;
@@ -61,6 +59,17 @@ int ind4;
 int ind5;
 int ind6;
 int ind7;
+int ind8;
+int ind9;
+int ind10;
+
+const int buttonPin1 = 13;     
+const int ledPin1 =  12;      
+
+int lastButtonState;
+
+unsigned long previousMillis = 0;
+unsigned long interval = 1000;
 
 void setup_wifi() {
 
@@ -88,58 +97,54 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   payload[length] = '\0';
+  
+  String message = "";
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
+  Serial.println(message);
 
-  if (topic == inTopic) {
-    ind1 = (char)payload[0].indexOf(';');
-    Prise1 = (char)payload[0].substring(0, ind1);
-    ind2 = (char)payload[0].indexOf(';', ind1+1);
-    Prise2 = (char)payload[0].substring(ind1+1, ind2+1);
-    ind3 = (char)payload[0].indexOf(';', ind2+1);
-    StartPlage1 = (char)payload[0].substring(ind2+1, ind3+1);
-    ind4 = (char)payload[0].indexOf(';', ind3+1);
-    EndPlage1 = (char)payload[0].substring(ind3+1, ind4+1);
-    ind5 = (char)payload[0].indexOf(';', ind4+1);
-    StartPlage2 = (char)payload[0].substring(ind4+1, ind5+1);
-    ind6 = (char)payload[0].indexOf(';', ind5+1);
-    EndPlage2 = (char)payload[0].substring(ind5+1);
-  
-    if (Prise1 == "ON") {
-      digitalWrite("Broche à alimenter", LOW);  
-    } else {
-      digitalWrite("Broche à couper", HIGH); 
-    }
-    if (Prise2 == "ON") {
-      digitalWrite("Broche à alimenter", LOW);  
-    } else {
-      digitalWrite("Broche à couper", HIGH); 
-    }
-    msg1 = StartPlage1 + ";" + EndPlage1;
-    client.publish(outTopic2, msg1);  
-    msg2 = StartPlage2 + ";" + EndPlage2;
-    client.publish(outTopic2, msg2);  
-  } else if (topic == inTopic2) {
-    ind7 = (char)payload[0].indexOf(';');
-    heure1 = (char)payload[0].substring(0, ind7);
-    ind8 = (char)payload[0].indexOf(';', ind7+1);
-    heure2 = (char)payload[0].substring(ind7+1);
+  if (topic == topic_mod) {
+    ind1 = message.indexOf(';');
+    Prise1 = message.substring(0, ind1);
+    ind2 = message.indexOf(';', ind1+1);
+    Prise2 = message.substring(ind1+1, ind2+1);
+    ind3 = message.indexOf(';', ind2+1);
+    StartPlage1 = message.substring(ind2+1, ind3+1);
+    ind4 = message.indexOf(';', ind3+1);
+    EndPlage1 = message.substring(ind3+1, ind4+1);
+    ind5 = message.indexOf(';', ind4+1);
+    StartPlage2 = message.substring(ind4+1, ind5+1);
+    ind6 = message.indexOf(';', ind5+1);
+    EndPlage2 = message.substring(ind5+1);
+    
+  } else if (topic == topic_heures) {
+    ind7 = message.indexOf(';');
+    heure1 = message.substring(0, ind7);
+    ind8 = message.indexOf(';', ind7+1);
+    heure2 = message.substring(ind7+1);
 
     if (heure1 == "YES") {
-      digitalWrite("Broche à alimenter", LOW);  
+      Prise1 = "ON";
     } else {
-      digitalWrite("Broche à couper", HIGH); 
+      Prise1 = "OFF";
     }
     if (heure2 == "YES") {
-      digitalWrite("Broche à alimenter", LOW);  
+      Prise2 = "ON";
     } else {
-      digitalWrite("Broche à couper", HIGH); 
+      Prise2 = "OFF";
     }
+
+  } else if (topic == topic_capteurs) {
+    ind9 = message.indexOf(';');
+    Capteur1 = message.substring(0, ind8);
+    ind10 = message.indexOf(';', ind8+1);
+    Capteur2 = message.substring(ind8+1);
+
   }
 }
 
@@ -151,14 +156,14 @@ void reconnect() {
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
-    if (client.connect(clientId.c_str())) {
+    if (client.connect(clientId.c_str(), mqtt_username, mqtt_username)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(outTopic, "hello app");
-      client.publish(outTopic2, "hello script");
+      client.publish(topic_reconnect, "YES");
       // ... and resubscribe
-      client.subscribe(inTopic);
-      client.subscribe(inTopic2);
+      client.subscribe(topic_mod);
+      client.subscribe(topic_heures);
+      client.subscribe(topic_capteurs);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -170,9 +175,12 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(115200);
-  EEPROM.begin(EEPROM_SIZE)
+  Serial.begin(9600);
+  pinMode(ledPin1, OUTPUT);
+  pinMode(buttonPin1, INPUT);
+
+  lastButtonState = digitalRead(buttonPin1);
+  
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
@@ -185,7 +193,49 @@ void loop() {
   }
   client.loop();
 
-  Serial.print("Publish message: ");
-  Serial.println(msg);
-  client.publish(outTopic, msg);
+  int buttonState = digitalRead(buttonPin1);
+
+  if ((lastButtonState == LOW) and (buttonState)) {
+    if (Prise1 == "ON") {
+      Prise1 = "OFF";
+    } else {
+      Prise1 = "ON";
+    }
+  }
+
+  lastButtonState = buttonState;
+
+  if (Prise1 == "ON") {
+    digitalWrite(ledPin1, HIGH);  
+  } else {
+    digitalWrite(ledPin1, LOW); 
+  }
+
+  unsigned long currentMillis = millis();
+   
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    
+    msg = "";
+    msg += (Prise1.length() > 0) ? Prise1 : "OFF";
+    msg += ";";
+    msg += (Prise2.length() > 0) ? Prise2 : "OFF";
+    msg += ";";
+    msg += (StartPlage1.length() > 0) ? StartPlage1 : "0:0:0";
+    msg += ";";
+    msg += (EndPlage1.length() > 0) ? EndPlage1 : "0:0:0";
+    msg += ";";
+    msg += (StartPlage2.length() > 0) ? StartPlage2 : "0:0:0";
+    msg += ";";
+    msg += (EndPlage2.length() > 0) ? EndPlage2 : "0:0:0";
+    msg += ";";
+    msg += (Capteur1.length() > 0) ? Capteur1 : "00,0";
+    msg += ";";
+    msg += (Capteur2.length() > 0) ? Capteur2 : "00,0";
+
+    msg.toCharArray(msg_final, sizeof(msg_final));
+    Serial.println("Publish message: ");
+    Serial.println(msg_final);
+    client.publish(topic_infos, msg_final);
+  }
 }
