@@ -1,5 +1,5 @@
-from django.urls import path
-
+from django.urls import path, reverse_lazy
+from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
 
 #Commande Prise
     path('prise/', views.select_prise, name='prise'),
-    path('login/', views.login_view, name='login'),
+    path('acceuil/', views.acceuil, name='acceuil'),
+    path('logout/', views.logout_view, name='logout'),
 ]

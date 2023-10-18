@@ -1,17 +1,21 @@
-{% extends "main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+</head>
 
-{% block title %}
-    Menu de la Prise WIFI Intelligente
-{% endblock %}
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Connexion</h2>
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" name="username" value="toto" required>
+        <label for="password">Mot de passe :</label>
+        <input type="password" name="password" value="toto" required>
 
-{% block content %}
-    <main>
-        <h2>Bienvenue dans le Menu de la Prise WIFI Intelligente</h2>
-        <p>Sélectionnez une option dans le menu ci-dessus pour commencer.</p>
-        <p>Vous êtes connecté en tant qu : {{ user.username }}</p>
-        <p>Prise 1 : {{ informations.prise1 }}</p>
-        <p>Prise 2 : {{ informations.prise2 }}</p>
-        {% load static %}
-        <img id=fond src="{%static '/GRJOJAPP/image/prise.jpg'%}" alt="Image prise">
-        <main>
-{% endblock %}
+        <button type="submit">Se connecter</button>
+    </form>
+</body>
+</html>

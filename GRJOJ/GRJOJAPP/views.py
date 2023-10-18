@@ -7,21 +7,30 @@ from mysql.connector import errorcode
 from .forms import PlageHoraireForm
 import time
 from django.http import HttpResponse
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
-def login_view(request):
+def index(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         if username == 'toto' and password == 'toto':
-            return redirect('index')
+            return render(request, 'GRJOJAPP/acceuil.html')
         else:
 
             return HttpResponse('Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe.')
 
-    return render(request, 'login.html')
+    return render(request, 'GRJOJAPP/index.html')
 
-def index(request):
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return render(request, 'GRJOJAPP/logout.html')  # Vous pouvez personnaliser cette page de déconnexion
+    else:
+        return redirect('index')
+
+def acceuil(request):
     # Récupérez l'état des prises 1 et 2 depuis la base de données
     informations = Informations.objects.first()
     prise1_state = informations.prise1 if informations.prise1 else "OFF"
@@ -39,7 +48,7 @@ def index(request):
     # Publiez la réponse au format MQTT
     client.publish(topic_modes, response)
 
-    return render(request, 'GRJOJAPP/index.html', {'informations': informations})
+    return render(request, 'GRJOJAPP/acceuil.html', {'informations': informations})
 
 broker = '192.168.170.62'
 username = 'toto'
@@ -89,7 +98,7 @@ def select_prise(request):
         informations.save()
 
 
-        return redirect('index')
+        return redirect('acceuil')
 
     return render(request, 'GRJOJAPP/prise.html')
 
@@ -125,7 +134,7 @@ def plage_horaire(request):
 
             informations.save()
             
-            return redirect('index')
+            return redirect('acceuil')
 
     return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form})
 
