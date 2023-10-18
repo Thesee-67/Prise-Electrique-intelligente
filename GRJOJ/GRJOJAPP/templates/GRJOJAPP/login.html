@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connexion</title>
+</head>
+<body>
+    <h1>Connexion</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.username.label_tag }} {{ form.username }}
+        <br>
+        {{ form.password.label_tag }} {{ form.password }}
+        <br>
+        <input type="submit" value="Se connecter">
+    </form>
+    {% if form.errors %}
+        <p>Erreur de connexion. Veuillez vérifier vos informations d'identification.</p>
+    {% endif %}
+</body>
+</html>
