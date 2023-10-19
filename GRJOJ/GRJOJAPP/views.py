@@ -11,6 +11,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
+from django.urls import reverse
+
 
 def index(request):
     if request.method == 'POST':
@@ -22,7 +24,9 @@ def index(request):
             if username == 'toto' and password == 'toto':
                 return redirect('acceuil')
             else:
-                return HttpResponse('Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe.')
+                login_url = reverse('index')
+                message = 'Échec de la connexion. Vérifiez votre nom d\'utilisateur et mot de passe. <a href="{}">Revenir à la page de connexion</a>.'.format(login_url)
+                return HttpResponse(message)
     else:
         form = LoginForm()
 

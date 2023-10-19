@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% block css %}
+    {% endblock %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/logout.css'%}">
     <title>Déconnexion</title>
 </head>
 <body>
