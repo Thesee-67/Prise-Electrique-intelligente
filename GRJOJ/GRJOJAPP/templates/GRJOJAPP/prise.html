@@ -10,6 +10,11 @@
 {% endblock %}
 
 {% block content %}
+    <div class="prise-status">
+        <p>Prise 1 : {{ informations.prise1 }}</p>
+        <p>Prise 2 : {{ informations.prise2 }}</p>
+    </div>
+
     <form method="post" class="select-form">
         {% csrf_token %}
         <label for="selected_prise">Sélectionnez une prise :</label>
@@ -18,7 +23,7 @@
             <option value="prise1_off">Prise 1 OFF</option>
             <option value="prise2_on">Prise 2 ON</option>
             <option value="prise2_off">Prise 2 OFF</option>
-        </select>        
+        </select>
         <input type="submit" class="submit-button" value="Valider">
     </form>
 
@@ -28,4 +33,16 @@
         <button type="submit" class="action-button action-button-allumer" name="allumer_prises" value="on">Allumer Prises</button>
         <button type="submit" class="action-button action-button-eteindre" name="eteindre_prises" value="off">Éteindre Prises</button>
     </form>
+
+    <script>
+        // Fonction pour rafraîchir la page après un certain laps de temps (en millisecondes)
+        function autoRefreshPage() {
+            setTimeout(function () {
+                location.reload();
+            }, 5000); // 5000 millisecondes (5 secondes). Vous pouvez ajuster ce délai selon vos besoins.
+        }
+
+        // Appeler la fonction de rafraîchissement automatique lorsque la page est chargée
+        window.onload = autoRefreshPage;
+    </script>
 {% endblock %}

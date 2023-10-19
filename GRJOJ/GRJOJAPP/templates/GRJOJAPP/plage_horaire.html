@@ -14,14 +14,25 @@
         <form method="post">
             {% csrf_token %}
             {{ form.startplage1.label_tag }}
-            <input type="time" name="{{ form.startplage1.name }}" value="{{ form.startplage1.value }}" step="1">
+            <input type="time" name="{{ form.startplage1.name }}" value="{{ form.startplage1.value|date:"H:i" }}" step="1">
             {{ form.endplage1.label_tag }}
-            <input type="time" name="{{ form.endplage1.name }}" value="{{ form.endplage1.value }}" step="1">
+            <input type="time" name="{{ form.endplage1.name }}" value="{{ form.endplage1.value|date:"H:i" }}" step="1">
             {{ form.startplage2.label_tag }}
-            <input type="time" name="{{ form.startplage2.name }}" value="{{ form.startplage2.value }}" step="1">
+            <input type="time" name="{{ form.startplage2.name }}" value="{{ form.startplage2.value|date:"H:i" }}" step="1">
             {{ form.endplage2.label_tag }}
-            <input type="time" name="{{ form.endplage2.name }}" value="{{ form.endplage2.value }}" step="1">        
+            <input type="time" name="{{ form.endplage2.name }}" value="{{ form.endplage2.value|date:"H:i" }}" step="1">        
             <button type="submit">Valider</button>
         </form>
     </div>
+    <script>
+        // Fonction pour rafraîchir la page après un certain laps de temps (en millisecondes)
+        function autoRefreshPage() {
+            setTimeout(function () {
+                location.reload();
+            }, 5000); // 5000 millisecondes (5 secondes). Vous pouvez ajuster ce délai selon vos besoins.
+        }
+    
+        // Appeler la fonction de rafraîchissement automatique lorsque la page est chargée
+        window.onload = autoRefreshPage;
+    </script>
 {% endblock %}

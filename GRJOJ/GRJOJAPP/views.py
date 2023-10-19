@@ -47,14 +47,13 @@ def acceuil(request):
     endplage1 = informations.endplage1 if informations.endplage1 else "00:00:00"
     endplage2 = informations.endplage2 if informations.endplage2 else "00:00:00"
 
-    other_values = "00.0;00.0"
     # Formatez la réponse au format souhaité
-    response = f"{prise1_state};{prise2_state};{startplage1};{startplage2};{endplage1};{endplage2};{other_values}"
+    response = f"{prise1_state};{prise2_state};{startplage1};{startplage2};{endplage1};{endplage2}"
 
     # Publiez la réponse au format MQTT
     client.publish(topic_modes, response)
 
-    return render(request, 'GRJOJAPP/acceuil.html', {'informations': informations})
+    return render(request, 'GRJOJAPP/acceuil.html')
 
 broker = '192.168.170.62'
 username = 'toto'
@@ -93,7 +92,7 @@ def select_prise(request):
         allumer_prises = request.POST.get('allumer_prises')
         eteindre_prises = request.POST.get('eteindre_prises')
 
-        informations = Informations.objects.first()
+        informations = Informations.objects.first() 
 
         if selected_prise == "prise1_on":
             informations.prise1 = "ON"
@@ -112,10 +111,12 @@ def select_prise(request):
             informations.prise2 = "OFF"
 
         informations.save()
-        
+   
         return redirect('acceuil')
+    else:
+        informations = Informations.objects.first() 
 
-    return render(request, 'GRJOJAPP/prise.html')
+    return render(request, 'GRJOJAPP/prise.html', {'informations': informations})
 
 def plage_horaire(request):
     informations = Informations.objects.first()

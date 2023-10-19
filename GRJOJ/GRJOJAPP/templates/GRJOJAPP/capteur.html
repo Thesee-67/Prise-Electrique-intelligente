@@ -12,7 +12,19 @@
 {% block content %}
     <div class="data-container">
         <h2 class="title">Données du Capteur</h2>
-        <p><strong>Capteur 1 :</strong> {{ informations.capteur1 }}</p>
-        <p><strong>Capteur 2 :</strong> {{ informations.capteur2 }}</p>
+        <p><strong>Capteur 1 :</strong> {{ informations.capteur1 }} <strong>°C</strong></p>
+        <p><strong>Capteur 2 :</strong> {{ informations.capteur2 }} <strong>°C</strong></p>
     </div>
+    <script>
+        // Fonction pour rafraîchir la page après un certain laps de temps (en millisecondes)
+        function autoRefreshPage() {
+            setTimeout(function () {
+                location.reload();
+            }, 1000); //Vous pouvez ajuster ce délai selon vos besoins.
+        }
+    
+        // Appeler la fonction de rafraîchissement automatique lorsque la page est chargée
+        window.onload = autoRefreshPage;
+    </script>
+    
 {% endblock %}
