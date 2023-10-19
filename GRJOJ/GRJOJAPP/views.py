@@ -30,11 +30,9 @@ def index(request):
 
 
 def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-        return render(request, 'GRJOJAPP/logout.html')  # Vous pouvez personnaliser cette page de déconnexion
-    else:
-        return redirect('index')
+    logout(request)
+    return render(request, 'GRJOJAPP/logout.html')  # Vous pouvez personnaliser cette page de déconnexion
+
 
 def acceuil(request):
     # Récupérez l'état des prises 1 et 2 depuis la base de données
