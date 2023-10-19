@@ -5,14 +5,12 @@ import paho.mqtt.client as mqtt
 import mysql.connector
 from mysql.connector import errorcode
 from .forms import PlageHoraireForm
-import time
 from django.http import HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.urls import reverse
-
 
 def index(request):
     if request.method == 'POST':
@@ -92,6 +90,8 @@ initialize_mqtt()
 def select_prise(request):
     if request.method == 'POST':
         selected_prise = request.POST.get('selected_prise')
+        allumer_prises = request.POST.get('allumer_prises')
+        eteindre_prises = request.POST.get('eteindre_prises')
 
         informations = Informations.objects.first()
 
@@ -103,9 +103,16 @@ def select_prise(request):
             informations.prise2 = "ON"
         elif selected_prise == "prise2_off":
             informations.prise2 = "OFF"
+        
+        if allumer_prises == "on":
+            informations.prise1 = "ON"
+            informations.prise2 = "ON"
+        elif eteindre_prises == "off":
+            informations.prise1 = "OFF"
+            informations.prise2 = "OFF"
+
         informations.save()
-
-
+        
         return redirect('acceuil')
 
     return render(request, 'GRJOJAPP/prise.html')
@@ -126,10 +133,20 @@ def plage_horaire(request):
             if informations.prise2 == "ON":
                 informations.prise2 = "ON"
 
-            # Le reste de votre code ici
-            client.publish(topic_infos, f"{start_time};{end_time}")
-            time.sleep(1)
+            if start_time:
+                start_time = datetime.strptime(start_time, '%H:%M:%S').time()
+            if end_time:
+                end_time = datetime.strptime(end_time, '%H:%M:%S').time()
             
+            if not informations.startplage1:
+                informations.startplage1 = time(0, 0, 0)
+            if not informations.endplage1:
+                informations.endplage1 = time(0, 0, 0)
+            if not informations.startplage2:
+                informations.startplage2 = time(0, 0, 0)
+            if not informations.endplage2:
+                informations.endplage2 = time(0, 0, 0)
+
             # Vérification de l'heure actuelle pour activer/désactiver les prises
             current_time = datetime.now().time()
             plage_horaire_prise1 = (informations.startplage1, informations.endplage1)
@@ -146,4 +163,8 @@ def plage_horaire(request):
 
     return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form})
 
+def capteur(request):
+    # Récupérez les données du capteur depuis la base de données
+    informations = Informations.objects.first()
 
+    return render(request, 'GRJOJAPP/capteur.html', {'informations': informations})

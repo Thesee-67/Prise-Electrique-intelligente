@@ -137,4 +137,7 @@ class Informations(models.Model):
         managed = False
         db_table = 'informations'
 
+    def __str__(self):
+        return f"Plage 1: {self.startplage1} - {self.endplage1}, Plage 2: {self.startplage2} - {self.endplage2}"
+
 

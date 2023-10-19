@@ -2,4 +2,17 @@
 
 {% block css %}
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'GRJOJAPP/capteur.css' %}">
+{% endblock %}
+
+{% block title %}
+    Données du Capteur
+{% endblock %}
+
+{% block content %}
+    <div class="data-container">
+        <h2 class="title">Données du Capteur</h2>
+        <p><strong>Capteur 1 :</strong> {{ informations.capteur1 }}</p>
+        <p><strong>Capteur 2 :</strong> {{ informations.capteur2 }}</p>
+    </div>
 {% endblock %}

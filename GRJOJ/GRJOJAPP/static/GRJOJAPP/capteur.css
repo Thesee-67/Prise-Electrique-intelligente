@@ -1,0 +1,27 @@
+/* Styles pour la page de données du capteur */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.data-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.data-container p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+/* Styles pour le titre */
+.title {
+    font-size: 1.8em;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007BFF; /* Couleur bleue pour le titre */
+}

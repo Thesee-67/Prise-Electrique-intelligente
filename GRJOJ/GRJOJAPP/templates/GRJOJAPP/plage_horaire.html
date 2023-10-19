@@ -2,6 +2,7 @@
 
 {% block css %}
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'GRJOJAPP/plage_horaires.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -9,9 +10,18 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Valider</button>
-    </form>
+    <div class="page-content"> <!-- Ajoutez cette div pour entourer le formulaire -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.startplage1.label_tag }}
+            <input type="time" name="{{ form.startplage1.name }}" value="{{ form.startplage1.value }}" step="1">
+            {{ form.endplage1.label_tag }}
+            <input type="time" name="{{ form.endplage1.name }}" value="{{ form.endplage1.value }}" step="1">
+            {{ form.startplage2.label_tag }}
+            <input type="time" name="{{ form.startplage2.name }}" value="{{ form.startplage2.value }}" step="1">
+            {{ form.endplage2.label_tag }}
+            <input type="time" name="{{ form.endplage2.name }}" value="{{ form.endplage2.value }}" step="1">        
+            <button type="submit">Valider</button>
+        </form>
+    </div>
 {% endblock %}

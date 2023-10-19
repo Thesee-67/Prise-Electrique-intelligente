@@ -6,7 +6,7 @@ urlpatterns = [
     path("index/", views.index, name='index'),
 
 #Capteur
-    #path('capteur/', views.capteur),
+    path('capteur/', views.capteur, name='capteur'),
 
 #Plage Horaires
     path('plage_horaire/', views.plage_horaire, name='plage_horaire'),

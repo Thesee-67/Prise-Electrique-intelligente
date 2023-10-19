@@ -1,0 +1,65 @@
+/* Styles pour le formulaire de sélection de la prise */
+.select-form {
+    width: 50%; /* Ajustez la largeur selon vos besoins */
+    margin: 0 auto; /* Centrez le formulaire horizontalement */
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour le formulaire d'allumage/éteignage des prises */
+.toggle-form {
+    width: 50%; /* Ajustez la largeur selon vos besoins */
+    margin: 0 auto; /* Centrez le formulaire horizontalement */
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.action-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.action-button-allumer {
+    background-color: #28a745;
+}
+
+.action-button-eteindre {
+    background-color: #dc3545; /* Couleur rouge pour le bouton "Éteindre Prises" */
+}
