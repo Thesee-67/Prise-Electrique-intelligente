@@ -1,27 +1,11 @@
-/*
- Basic ESP8266 MQTT example
- This sketch demonstrates the capabilities of the pubsub library in combination
- with the ESP8266 board/library.
- It connects to an MQTT server then:
-  - publishes "hello world" to the topic "outTopic" every two seconds
-  - subscribes to the topic "inTopic", printing out any messages
-    it receives. NB - it assumes the received payloads are strings not binary
-  - If the first character of the topic "inTopic" is an 1, switch ON the ESP Led,
-    else switch it off
- It will reconnect to the server if the connection is lost using a blocking
- reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
- achieve the same result without blocking the main loop.
- To install the ESP8266 board, (using Arduino 1.6.4+):
-  - Add the following 3rd party board manager under "File -> Preferences -> Additional Boards Manager URLs":
-       http://arduino.esp8266.com/stable/package_esp8266com_index.json
-  - Open the "Tools -> Board -> Board Manager" and click install for the ESP8266"
-  - Select your ESP8266 in "Tools -> Board"
-*/
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-// Update these with values suitable for your network.
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 14
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
 
 const char* ssid = "Hello";
 const char* password = "Bonjour*'";
@@ -108,7 +92,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("] ");
   Serial.println(message);
 
-  if (topic == topic_mod) {
+  if (strcmp(topic, topic_mod) == 0) {
     ind1 = message.indexOf(';');
     Prise1 = message.substring(0, ind1);
     ind2 = message.indexOf(';', ind1+1);
@@ -122,7 +106,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ind6 = message.indexOf(';', ind5+1);
     EndPlage2 = message.substring(ind5+1);
     
-  } else if (topic == topic_heures) {
+  } else if (strcmp(topic, topic_heures) == 0) {
     ind7 = message.indexOf(';');
     heure1 = message.substring(0, ind7);
     ind8 = message.indexOf(';', ind7+1);
@@ -139,7 +123,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Prise2 = "OFF";
     }
 
-  } else if (topic == topic_capteurs) {
+  } else if (strcmp(topic, topic_capteurs) == 0) {
     ind9 = message.indexOf(';');
     Capteur1 = message.substring(0, ind8);
     ind10 = message.indexOf(';', ind8+1);
@@ -184,6 +168,7 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  sensors.begin();
 }
 
 void loop() {
@@ -210,6 +195,10 @@ void loop() {
   } else {
     digitalWrite(ledPin1, LOW); 
   }
+
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
+  Capteur1 = tempC;
 
   unsigned long currentMillis = millis();
    
