@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    {% block css %}
+    {% endblock %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{%static '/GRJOJAPP/Confirmation.css'%}">
+<head>
+    <title>Confirmation</title>
+</head>
+<body>
+    <h1>Confirmation</h1>
+    <p>Les données ont bien été enregistrées.</p>
+    <a href="{% url 'acceuil' %}">Retour à la page d'accueil</a>
+</body>
+</html>

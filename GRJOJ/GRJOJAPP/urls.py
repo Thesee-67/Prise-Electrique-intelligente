@@ -15,4 +15,5 @@ urlpatterns = [
     path('prise/', views.select_prise, name='prise'),
     path('acceuil/', views.acceuil, name='acceuil'),
     path('logout/', views.logout_view, name='logout'),
+    path('confirmation/', views.confirmation, name='confirmation'),
 ]

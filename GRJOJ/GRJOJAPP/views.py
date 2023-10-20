@@ -37,25 +37,9 @@ def logout_view(request):
 
 
 def acceuil(request):
-    # Récupérez l'état des prises 1 et 2 depuis la base de données
-    informations = Informations.objects.first()
-    prise1_state = informations.prise1 if informations.prise1 else "OFF"
-    prise2_state = informations.prise2 if informations.prise2 else "OFF"
-
-    startplage1 = informations.startplage1 if informations.startplage1 else "00:00:00"
-    startplage2 = informations.startplage2 if informations.startplage2 else "00:00:00"
-    endplage1 = informations.endplage1 if informations.endplage1 else "00:00:00"
-    endplage2 = informations.endplage2 if informations.endplage2 else "00:00:00"
-
-    # Formatez la réponse au format souhaité
-    response = f"{prise1_state};{prise2_state};{startplage1};{endplage1};{startplage2};{endplage2}"
-
-    # Publiez la réponse au format MQTT
-    client.publish(topic_modes, response)
-
     return render(request, 'GRJOJAPP/acceuil.html')
 
-broker = '192.168.170.62'
+broker = '192.168.50.62'
 username = 'toto'
 password = 'toto'
 port = 1883
@@ -87,6 +71,7 @@ def initialize_mqtt():
 initialize_mqtt()
 
 def select_prise(request):
+    latest_information = Informations.objects.latest('id')
     if request.method == 'POST':
         selected_prise = request.POST.get('selected_prise')
         allumer_prises = request.POST.get('allumer_prises')
@@ -111,17 +96,18 @@ def select_prise(request):
             informations.prise2 = "OFF"
 
         informations.save()
-        latest_information = Informations.objects.latest('id')
    
-        return redirect('acceuil')
+        return redirect('confirmation')
     else:
-        informations = Informations.objects.first()
+        informations = Informations.objects.first() 
 
-    return render(request, 'GRJOJAPP/prise.html', {'latest_information':latest_information })
+    return render(request, 'GRJOJAPP/prise.html', {'informations': informations, 'latest_information':latest_information })
+
 
 def plage_horaire(request):
     informations = Informations.objects.first()
     form = PlageHoraireForm(request.POST or None, instance=informations)
+    latest_informations = Informations.objects.latest('id')
 
     if request.method == 'POST':
         if form.is_valid():
@@ -160,14 +146,32 @@ def plage_horaire(request):
                 informations.prise2 = "ON"
 
             informations.save()
-            
-            return redirect('acceuil')
+            return redirect('confirmation')
 
-    return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form})
+    return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form,'latest_informations': latest_informations})
 
 def capteur(request):
     # Récupérez les données du capteur depuis la base de données
     informations = Informations.objects.all()
     latest_information = Informations.objects.latest('id')
     return render(request, 'GRJOJAPP/capteur.html', {'latest_information':latest_information })
+
+def confirmation(request):
+    # Récupérez l'état des prises 1 et 2 depuis la base de données
+    informations = Informations.objects.first()
+    prise1_state = informations.prise1 if informations.prise1 else "OFF"
+    prise2_state = informations.prise2 if informations.prise2 else "OFF"
+
+    startplage1 = informations.startplage1 if informations.startplage1 else "00:00:00"
+    startplage2 = informations.startplage2 if informations.startplage2 else "00:00:00"
+    endplage1 = informations.endplage1 if informations.endplage1 else "00:00:00"
+    endplage2 = informations.endplage2 if informations.endplage2 else "00:00:00"
+
+    # Formatez la réponse au format souhaité
+    response = f"{prise1_state};{prise2_state};{startplage1};{endplage1};{startplage2};{endplage2}"
+
+    # Publiez la réponse au format MQTT
+    client.publish(topic_modes, response)
+
+    return render(request, 'GRJOJAPP/Confirmation.html')
 

@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'SAE301',
         'USER': 'root',
         'PASSWORD': 'toto',
-        'HOST': '192.168.170.62',
+        'HOST': '192.168.50.62',
         'PORT': '3306',
     }
 }

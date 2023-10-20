@@ -1,0 +1,32 @@
+/* Ajoutez ces styles à votre fichier CSS (par exemple, styles.css) */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    font-size: 18px;
+    color: #0073e6;
+}
+
+a {
+    text-decoration: none;
+    background-color: #0073e6;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+a:hover {
+    background-color: #0059b3;
+}
