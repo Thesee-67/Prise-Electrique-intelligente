@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.urls import reverse
+import smtplib
 
 def index(request):
     if request.method == 'POST':
@@ -150,11 +151,37 @@ def plage_horaire(request):
 
     return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form,'latest_informations': latest_informations})
 
-def capteur(request):
+def Capteur(request):
     # Récupérez les données du capteur depuis la base de données
-    informations = Informations.objects.all()
     latest_information = Informations.objects.latest('id')
-    return render(request, 'GRJOJAPP/capteur.html', {'latest_information':latest_information })
+
+    # Vérifiez si la température est supérieure à 25 degrés
+    if latest_information.temperature > 25:
+        # Configurez les détails de l'e-mail
+        from_email = 'toto@gmail.com'
+        to_email = 'olivier.guittet@uha.fr'
+        subject = 'Alerte de température élevée'
+        message = f'La température est de {latest_information.temperature} degrés.'
+
+        # Établissez une connexion SMTP
+        smtp_server = 'smtp.gmail.com'  # Exemple pour Gmail, mettez à jour pour votre serveur
+        smtp_port = 587
+        smtp_username = 'toto@gmail.com'
+        smtp_password = 'toto'
+
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+
+        # Créez et envoyez l'e-mail
+        email = f'Subject: {subject}\n\n{message}'
+        server.sendmail(from_email, to_email, email)
+
+        # Fermez la connexion SMTP
+        server.quit()
+
+    return render(request, 'GRJOJAPP/capteur.html', {'latest_information': latest_information})
+
 
 def confirmation(request):
     # Récupérez l'état des prises 1 et 2 depuis la base de données
