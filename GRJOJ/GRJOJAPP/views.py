@@ -184,7 +184,7 @@ def Capteur(request):
     if latest_information.capteur2 > 25:
         # Configurez les détails de l'e-mail
         from_email = 'toto81839@gmail.com'
-        to_email = 'olivier.guittet@uha.fr'
+        to_email = 'og67guittet@gmail.com'
         subject = 'Alerte de température élevée'
         message = f'La température est de {latest_information.capteur2} degrés.'
 
