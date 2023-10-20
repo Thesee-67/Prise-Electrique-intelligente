@@ -156,12 +156,37 @@ def Capteur(request):
     latest_information = Informations.objects.latest('id')
 
     # Vérifiez si la température est supérieure à 25 degrés
-    if latest_information.temperature > 25:
+    if latest_information.capteur1 > 25:
         # Configurez les détails de l'e-mail
         from_email = 'toto@gmail.com'
         to_email = 'olivier.guittet@uha.fr'
         subject = 'Alerte de température élevée'
-        message = f'La température est de {latest_information.temperature} degrés.'
+        message = f'La température est de {latest_information.capteur1} degrés.'
+
+        # Établissez une connexion SMTP
+        smtp_server = 'smtp.gmail.com'  # Exemple pour Gmail, mettez à jour pour votre serveur
+        smtp_port = 587
+        smtp_username = 'toto@gmail.com'
+        smtp_password = 'toto'
+
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+
+        # Créez et envoyez l'e-mail
+        email = f'Subject: {subject}\n\n{message}'
+        server.sendmail(from_email, to_email, email)
+
+        # Fermez la connexion SMTP
+        server.quit()
+
+        # Vérifiez si la température est supérieure à 25 degrés
+    if latest_information.capteur2 > 25:
+        # Configurez les détails de l'e-mail
+        from_email = 'toto@gmail.com'
+        to_email = 'olivier.guittet@uha.fr'
+        subject = 'Alerte de température élevée'
+        message = f'La température est de {latest_information.capteur2} degrés.'
 
         # Établissez une connexion SMTP
         smtp_server = 'smtp.gmail.com'  # Exemple pour Gmail, mettez à jour pour votre serveur
