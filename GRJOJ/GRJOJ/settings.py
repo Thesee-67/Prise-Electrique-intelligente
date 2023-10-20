@@ -16,6 +16,17 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
+EMAIL_PORT = 587  # Port SMTP pour TLS
+EMAIL_USE_TLS = True  # Utilisez TLS pour la connexion
+EMAIL_HOST_USER = 'toto81839@gmail.com'  # Votre adresse e-mail Gmail
+EMAIL_HOST_PASSWORD = 'toto1234*-'  # Votre mot de passe d'application ou mot de passe normal
+
+# Configuration d'autres paramètres pour les e-mails sortants
+DEFAULT_FROM_EMAIL = 'toto81839@gmail.com'  # L'adresse d'envoi par défaut
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/

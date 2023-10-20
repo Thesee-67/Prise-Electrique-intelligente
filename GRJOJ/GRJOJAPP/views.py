@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.urls import reverse
 import smtplib
+from django.core.mail import send_mail
 
 def index(request):
     if request.method == 'POST':
@@ -151,59 +152,21 @@ def plage_horaire(request):
 
     return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form,'latest_informations': latest_informations})
 
-def Capteur(request):
+def capteur(request):
     # Récupérez les données du capteur depuis la base de données
     latest_information = Informations.objects.latest('id')
+    temperature = float(latest_information.capteur1)
 
-    # Vérifiez si la température est supérieure à 25 degrés
-    if latest_information.capteur1 > 25:
+    if temperature > 25.0:
         # Configurez les détails de l'e-mail
-        from_email = 'toto81839@gmail.com'
-        to_email = 'og67guittet@gmail.com'
         subject = 'Alerte de température élevée'
-        message = f'La température est de {latest_information.capteur1} degrés.'
+        message = f'La température est de {temperature} degrés.'
+        from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+        recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+        password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
 
-        # Établissez une connexion SMTP
-        smtp_server = 'smtp.gmail.com'  # Exemple pour Gmail, mettez à jour pour votre serveur
-        smtp_port = 587
-        smtp_username = 'toto81839@gmail.com'
-        smtp_password = 'toto81839'
-
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-
-        # Créez et envoyez l'e-mail
-        email = f'Subject: {subject}\n\n{message}'
-        server.sendmail(from_email, to_email, email)
-
-        # Fermez la connexion SMTP
-        server.quit()
-
-        # Vérifiez si la température est supérieure à 25 degrés
-    if latest_information.capteur2 > 25:
-        # Configurez les détails de l'e-mail
-        from_email = 'toto81839@gmail.com'
-        to_email = 'og67guittet@gmail.com'
-        subject = 'Alerte de température élevée'
-        message = f'La température est de {latest_information.capteur2} degrés.'
-
-        # Établissez une connexion SMTP
-        smtp_server = 'smtp.gmail.com'  # Exemple pour Gmail, mettez à jour pour votre serveur
-        smtp_port = 587
-        smtp_username = 'toto81839@gmail.com'
-        smtp_password = 'toto81839'
-
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-
-        # Créez et envoyez l'e-mail
-        email = f'Subject: {subject}\n\n{message}'
-        server.sendmail(from_email, to_email, email)
-
-        # Fermez la connexion SMTP
-        server.quit()
+        # Envoyez l'e-mail en utilisant le mot de passe d'application
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
 
     return render(request, 'GRJOJAPP/capteur.html', {'latest_information': latest_information})
 
