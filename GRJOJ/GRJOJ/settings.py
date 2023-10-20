@@ -86,10 +86,10 @@ WSGI_APPLICATION = 'GRJOJ.wsgi.application'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sae301',
+        'NAME': 'SAE301',
         'USER': 'root',
-        'PASSWORD': '04/11/17',
-        'HOST': 'localhost',
+        'PASSWORD': 'toto',
+        'HOST': '192.168.170.62',
         'PORT': '3306',
     }
 }
