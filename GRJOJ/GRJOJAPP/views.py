@@ -48,7 +48,7 @@ def acceuil(request):
     endplage2 = informations.endplage2 if informations.endplage2 else "00:00:00"
 
     # Formatez la réponse au format souhaité
-    response = f"{prise1_state};{prise2_state};{startplage1};{startplage2};{endplage1};{endplage2}"
+    response = f"{prise1_state};{prise2_state};{startplage1};{endplage1};{startplage2};{endplage2}"
 
     # Publiez la réponse au format MQTT
     client.publish(topic_modes, response)
