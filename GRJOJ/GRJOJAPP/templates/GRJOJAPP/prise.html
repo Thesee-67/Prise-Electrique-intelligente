@@ -11,10 +11,27 @@
 
 {% block content %}
     <div class="prise-status">
-        <p>Prise 1 : {{ informations.prise1 }}</p>
-        <p>Prise 2 : {{ informations.prise2 }}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Prise 1:</th>
+                    <th scope="col">Prise 2:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if latest_information %}
+                    <tr>
+                        <td>{{ latest_information.prise1 }}</td>
+                        <td>{{ latest_information.prise2 }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">Aucune donnée enregistrée.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
     </div>
-
     <form method="post" class="select-form">
         {% csrf_token %}
         <label for="selected_prise">Sélectionnez une prise :</label>

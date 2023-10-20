@@ -111,12 +111,13 @@ def select_prise(request):
             informations.prise2 = "OFF"
 
         informations.save()
+        latest_information = Informations.objects.latest('id')
    
         return redirect('acceuil')
     else:
-        informations = Informations.objects.first() 
+        informations = Informations.objects.first()
 
-    return render(request, 'GRJOJAPP/prise.html', {'informations': informations})
+    return render(request, 'GRJOJAPP/prise.html', {'latest_information':latest_information })
 
 def plage_horaire(request):
     informations = Informations.objects.first()
@@ -166,6 +167,7 @@ def plage_horaire(request):
 
 def capteur(request):
     # Récupérez les données du capteur depuis la base de données
-    informations = Informations.objects.first()
+    informations = Informations.objects.all()
+    latest_information = Informations.objects.latest('id')
+    return render(request, 'GRJOJAPP/capteur.html', {'latest_information':latest_information })
 
-    return render(request, 'GRJOJAPP/capteur.html', {'informations': informations})

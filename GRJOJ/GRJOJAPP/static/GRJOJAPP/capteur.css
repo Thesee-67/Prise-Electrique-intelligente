@@ -13,15 +13,21 @@ h2 {
     border-radius: 5px;
 }
 
-.data-container p {
-    font-size: 1.2em;
-    margin: 10px 0;
+.data-container table {
+    width: 100%;
 }
 
-/* Styles pour le titre */
-.title {
-    font-size: 1.8em;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #007BFF; /* Couleur bleue pour le titre */
+.data-container table th {
+    font-weight: bold;
+    text-align: left;
+}
+
+.data-container table td {
+    padding: 5px;
+}
+
+/* Styles pour les libellés des capteurs */
+.capteur-label {
+    font-weight: bold;
+    color: #007BFF; /* Couleur bleue pour les libellés des capteurs */
 }
