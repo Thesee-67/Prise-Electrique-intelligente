@@ -13,6 +13,7 @@ from .forms import LoginForm
 from django.urls import reverse
 import smtplib
 from django.core.mail import send_mail
+import datetime
 
 def index(request):
     if request.method == 'POST':
@@ -152,23 +153,94 @@ def plage_horaire(request):
 
     return render(request, 'GRJOJAPP/plage_horaire.html', {'form': form,'latest_informations': latest_informations})
 
+# Définissez des variables globales pour suivre le moment de la dernière alerte
+last_alert_time1 = None
+last_alert_time2 = None
+threshold_temperature1 = 25.0  # Valeur par défaut pour capteur 1
+threshold_temperature2 = 25.0  # Valeur par défaut pour capteur 2
+threshold_temperature_critique = 40  # Seuil critique par défaut
+delay = 3600  # Délai entre les alertes par défaut
+
 def capteur(request):
-    # Récupérez les données du capteur depuis la base de données
+    global last_alert_time1
+    global last_alert_time2
+    global threshold_temperature1
+    global threshold_temperature2
+    global threshold_temperature_critique
+    global delay
+
     latest_information = Informations.objects.latest('id')
-    temperature = float(latest_information.capteur1)
+    temperature1 = float(latest_information.capteur1.replace(',', '.'))  # Remplacez la virgule par un point
+    temperature2 = float(latest_information.capteur2.replace(',', '.'))  # Remplacez la virgule par un point
 
-    if temperature > 25.0:
-        # Configurez les détails de l'e-mail
-        subject = 'Alerte de température élevée'
-        message = f'La température est de {temperature} degrés.'
-        from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
-        recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
-        password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
+    # Récupérez les seuils de température à partir du formulaire
+    if request.method == 'POST':
+        threshold_temperature1 = float(request.POST.get('threshold_temperature1', 25.0))
+        threshold_temperature2 = float(request.POST.get('threshold_temperature2', 25.0))
+        threshold_temperature_critique = float(request.POST.get('threshold_temperature_critique', 40))
+        delay = int(request.POST.get('delay_between_alerts', 3600))
 
-        # Envoyez l'e-mail en utilisant le mot de passe d'application
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+    # Vérifiez si la température actuelle dépasse la température seuil pour capteur 1
+    if temperature1 > threshold_temperature1:
+        current_time = datetime.datetime.now()
+        if last_alert_time1 is None or (current_time - last_alert_time1).total_seconds() >= delay:
+            # Configurez les détails de l'e-mail comme vous l'avez fait précédemment
+            subject = 'Alerte de température élevée'
+            message = f'La température est supérieure à {threshold_temperature1}, la température actuelle est de {temperature1} degrés.'
+            from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+            recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+            password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
+            
+            # Envoyez l'e-mail en utilisant le mot de passe d'application
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+            
+            # Mettez à jour le moment de la dernière alerte
+            last_alert_time1 = current_time
 
-    return render(request, 'GRJOJAPP/capteur.html', {'latest_information': latest_information})
+            if temperature1 > threshold_temperature_critique:
+                # Si la température dépasse le seuil critique, envoyez un e-mail immédiatement
+                subject = 'Alerte de température critique'
+                message = f'La température est supérieure au seuil critique de {threshold_temperature_critique}, la température actuelle est de {temperature1} degrés.'
+                from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+                recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+                
+                # Envoyez l'e-mail en utilisant le mot de passe d'application
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+    
+    # Vérifiez si la température actuelle dépasse la température seuil pour capteur 2
+    if temperature2 > threshold_temperature2:
+        current_time = datetime.datetime.now()
+        if last_alert_time2 is None or (current_time - last_alert_time2).total_seconds() >= delay:
+            # Configurez les détails de l'e-mail comme vous l'avez fait précédemment
+            subject = 'Alerte de température élevée'
+            message = f'La température est supérieure à {threshold_temperature2}, la température actuelle est de {temperature2} degrés.'
+            from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+            recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+            password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
+            
+            # Envoyez l'e-mail en utilisant le mot de passe d'application
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+            
+            # Mettez à jour le moment de la dernière alerte
+            last_alert_time2 = current_time
+
+            if temperature2 > threshold_temperature_critique:
+                # Si la température dépasse le seuil critique, envoyez un e-mail immédiatement
+                subject = 'Alerte de température critique'
+                message = f'La température est supérieure au seuil critique de {threshold_temperature_critique}, la température actuelle est de {temperature2} degrés.'
+                from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+                recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+                
+                # Envoyez l'e-mail en utilisant le mot de passe d'application
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+
+    return render(request, 'GRJOJAPP/capteur.html', {
+        'latest_information': latest_information,
+        'threshold_temperature1': threshold_temperature1,
+        'threshold_temperature2': threshold_temperature2,
+        'threshold_temperature_critique': threshold_temperature_critique,
+        'delay_between_alerts': delay,
+    })
 
 
 def confirmation(request):

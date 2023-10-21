@@ -1,33 +1,63 @@
-/* Styles pour la page de données du capteur */
-h2 {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-}
-
+/* Styles for the data container */
 .data-container {
-    width: 50%;
-    margin: 0 auto;
+    margin: 20px;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #f5f5f5;
     border: 1px solid #ddd;
     border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.data-container table {
+/* Title style */
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form styles */
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="number"] {
     width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
-.data-container table th {
-    font-weight: bold;
-    text-align: left;
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.data-container table td {
-    padding: 5px;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* Styles pour les libellés des capteurs */
-.capteur-label {
-    font-weight: bold;
-    color: #007BFF; /* Couleur bleue pour les libellés des capteurs */
+table, th, td {
+    border: 1px solid #ccc;
 }
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Define additional styles as needed */
