@@ -175,25 +175,43 @@ def capteur(request):
 
     # Récupérez les seuils de température à partir du formulaire
     if request.method == 'POST':
-        threshold_temperature1 = float(request.POST.get('threshold_temperature1', 25.0))
-        threshold_temperature2 = float(request.POST.get('threshold_temperature2', 25.0))
-        threshold_temperature_critique = float(request.POST.get('threshold_temperature_critique', 40))
-        delay = int(request.POST.get('delay_between_alerts', 3600))
+        new_threshold1 = float(request.POST.get('threshold_temperature1'))
+        new_threshold2 = float(request.POST.get('threshold_temperature2'))
+        new_threshold_critique = float(request.POST.get('threshold_temperature_critique'))
+        new_delay = int(request.POST.get('delay_between_alerts'))
+
+        # Vérifiez si les seuils ont été modifiés
+        if new_threshold1 != threshold_temperature1 or new_threshold2 != threshold_temperature2:
+            # Envoyez un e-mail pour informer de la modification des seuils
+            subject = 'Modification des seuils de température'
+            message = f'Nouveaux seuils : Capteur 1 : {new_threshold1}, Capteur 2 : {new_threshold2}'
+            from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
+            recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
+            password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
+
+            # Envoyez l'e-mail en utilisant le mot de passe d'application
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
+
+        # Mettez à jour les seuils et le délai
+        threshold_temperature1 = new_threshold1
+        threshold_temperature2 = new_threshold2
+        threshold_temperature_critique = new_threshold_critique
+        delay = new_delay
 
     # Vérifiez si la température actuelle dépasse la température seuil pour capteur 1
     if temperature1 > threshold_temperature1:
         current_time = datetime.datetime.now()
         if last_alert_time1 is None or (current_time - last_alert_time1).total_seconds() >= delay:
-            # Configurez les détails de l'e-mail comme vous l'avez fait précédemment
+            # Configurez les détails de l'e-mail
             subject = 'Alerte de température élevée'
             message = f'La température est supérieure à {threshold_temperature1}, la température actuelle est de {temperature1} degrés.'
             from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
             recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
             password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
-            
+
             # Envoyez l'e-mail en utilisant le mot de passe d'application
             send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
-            
+
             # Mettez à jour le moment de la dernière alerte
             last_alert_time1 = current_time
 
@@ -203,10 +221,10 @@ def capteur(request):
                 message = f'La température est supérieure au seuil critique de {threshold_temperature_critique}, la température actuelle est de {temperature1} degrés.'
                 from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
                 recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
-                
+
                 # Envoyez l'e-mail en utilisant le mot de passe d'application
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
-    
+
     # Vérifiez si la température actuelle dépasse la température seuil pour capteur 2
     if temperature2 > threshold_temperature2:
         current_time = datetime.datetime.now()
@@ -217,10 +235,10 @@ def capteur(request):
             from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
             recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
             password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
-            
+
             # Envoyez l'e-mail en utilisant le mot de passe d'application
             send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
-            
+
             # Mettez à jour le moment de la dernière alerte
             last_alert_time2 = current_time
 
@@ -230,7 +248,7 @@ def capteur(request):
                 message = f'La température est supérieure au seuil critique de {threshold_temperature_critique}, la température actuelle est de {temperature2} degrés.'
                 from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
                 recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
-                
+
                 # Envoyez l'e-mail en utilisant le mot de passe d'application
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
 
