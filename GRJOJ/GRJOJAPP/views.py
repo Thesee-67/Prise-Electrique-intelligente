@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Informations
-from datetime import datetime, time
+from datetime import datetime, time  # Remove the redundant 'datetime' import
 import paho.mqtt.client as mqtt
 import mysql.connector
 from mysql.connector import errorcode
@@ -13,7 +13,9 @@ from .forms import LoginForm
 from django.urls import reverse
 import smtplib
 from django.core.mail import send_mail
-import datetime
+
+# Remove the redundant 'import datetime'
+
 
 def index(request):
     if request.method == 'POST':
