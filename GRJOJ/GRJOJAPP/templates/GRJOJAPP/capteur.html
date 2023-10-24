@@ -12,27 +12,29 @@
 {% block content %}
     <div class="data-container">
         <h2 class="title">Données du Capteur</h2>
-            <form method="post" action="{% url 'capteur' %}">
-                {% csrf_token %}
-                <label for="threshold_temperature1">Température seuil pour capteur 1 (en degrés Celsius) : </label>
-                <input type="number" id="threshold_temperature1" name="threshold_temperature1" step="0.1" placeholder="Entrez la température seuil pour capteur 1" value="{{ threshold_temperature1 }}">
-                <br>
-                <label for="threshold_temperature2">Température seuil pour capteur 2 (en degrés Celsius) : </label>
-                <input type="number" id="threshold_temperature2" name="threshold_temperature2" step="0.1" placeholder="Entrez la température seuil pour capteur 2" value="{{ threshold_temperature2 }}">
-                <br>
-                <label for="threshold_temperature_critique">Température seuil critique (en degrés Celsius) : </label>
-                <input type="number" id="threshold_temperature_critique" name="threshold_temperature_critique" step="0.1" placeholder="Entrez la température seuil critique" value="{{ threshold_temperature_critique }}">
-                <br>
-                <label for="delay_between_alerts">Délai entre les alertes (en secondes) : </label>
-                <input type="number" id="delay_between_alerts" name="delay_between_alerts" placeholder="Entrez le délai entre les alertes" value="{{ delay_between_alerts }}">
-                <br>
-                <button type="submit">Définir</button>
-            </form>
+        <form method="post" action="{% url 'capteur' %}">
+            {% csrf_token %}
+            <label for="threshold_temperature1">Température seuil pour capteur 1 (en degrés Celsius) : </label>
+            <input type="number" id="threshold_temperature1" name="threshold_temperature1" step="0.1" placeholder="Entrez la température seuil pour capteur 1" value="{{ threshold_temperature1 }}">
+            <br>
+            <label for="threshold_temperature2">Température seuil pour capteur 2 (en degrés Celsius) : </label>
+            <input type="number" id="threshold_temperature2" name="threshold_temperature2" step="0.1" placeholder="Entrez la température seuil pour capteur 2" value="{{ threshold_temperature2 }}">
+            <br>
+            <label for="threshold_temperature_critique">Température seuil critique (en degrés Celsius) : </label>
+            <input type="number" id="threshold_temperature_critique" name="threshold_temperature_critique" step="0.1" placeholder="Entrez la température seuil critique" value="{{ threshold_temperature_critique }}">
+            <br>
+            <label for="delay_between_alerts">Délai entre les alertes (en secondes) : </label>
+            <input type="number" id="delay_between_alerts" name="delay_between_alerts" placeholder="Entrez le délai entre les alertes" value="{{ delay_between_alerts }}">
+            <br>
+            <button type="submit">Définir</button>
+        </form>
         <table>
             <thead>
                 <tr>
                     <th scope="col">Capteur1</th>
                     <th scope="col">Capteur2</th>
+                    <th scope="col">Seuil de Température Dépassé (Capteur 1)</th>
+                    <th scope="col">Seuil de Température Dépassé (Capteur 2)</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,10 +42,12 @@
                     <tr>
                         <td>{{ latest_information.capteur1 }}</td>
                         <td>{{ latest_information.capteur2 }}</td>
+                        <td>{% if seuil_depassee_capteur1 %} Oui {% else %} Non {% endif %}</td>
+                        <td>{% if seuil_depassee_capteur2 %} Oui {% else %} Non {% endif %}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="2">Aucune donnée enregistrée.</td>
+                        <td colspan="4">Aucune donnée enregistrée.</td>
                     </tr>
                 {% endif %}
             </tbody>
@@ -55,4 +59,5 @@
             location.reload();
         }, 20000); // 20 000 millisecondes équivalent à 20 secondes
     </script>
+</div>
 {% endblock %}

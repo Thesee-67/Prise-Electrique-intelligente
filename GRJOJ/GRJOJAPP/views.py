@@ -202,7 +202,7 @@ def capteur(request):
 
     # Vérifiez si la température actuelle dépasse la température seuil pour capteur 1
     if temperature1 > threshold_temperature1:
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
         if last_alert_time1 is None or (current_time - last_alert_time1).total_seconds() >= delay:
             # Configurez les détails de l'e-mail
             subject = 'Alerte de température élevée'
@@ -229,7 +229,7 @@ def capteur(request):
 
     # Vérifiez si la température actuelle dépasse la température seuil pour capteur 2
     if temperature2 > threshold_temperature2:
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
         if last_alert_time2 is None or (current_time - last_alert_time2).total_seconds() >= delay:
             # Configurez les détails de l'e-mail comme vous l'avez fait précédemment
             subject = 'Alerte de température élevée'
@@ -254,12 +254,17 @@ def capteur(request):
                 # Envoyez l'e-mail en utilisant le mot de passe d'application
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_password=password)
 
+    seuil_depassee_capteur1 = temperature1 > threshold_temperature1
+    seuil_depassee_capteur2 = temperature2 > threshold_temperature2
+    
     return render(request, 'GRJOJAPP/capteur.html', {
         'latest_information': latest_information,
         'threshold_temperature1': threshold_temperature1,
         'threshold_temperature2': threshold_temperature2,
         'threshold_temperature_critique': threshold_temperature_critique,
         'delay_between_alerts': delay,
+        'seuil_depassee_capteur1': seuil_depassee_capteur1,
+        'seuil_depassee_capteur2': seuil_depassee_capteur2,
     })
 
 
