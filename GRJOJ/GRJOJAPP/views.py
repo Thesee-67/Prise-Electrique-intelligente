@@ -204,7 +204,7 @@ def capteur(request):
         if last_alert_time1 is None or (current_time - last_alert_time1).total_seconds() >= delay:
             # Configurez les détails de l'e-mail
             subject = 'Alerte de température élevée'
-            message = f'La température est supérieure à {threshold_temperature1}, la température actuelle est de {temperature1} degrés.'
+            message = f'La température du Capteur 1 est supérieure à {threshold_temperature1}, la température actuelle est de {temperature1} degrés.'
             from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
             recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
             password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
@@ -231,7 +231,7 @@ def capteur(request):
         if last_alert_time2 is None or (current_time - last_alert_time2).total_seconds() >= delay:
             # Configurez les détails de l'e-mail comme vous l'avez fait précédemment
             subject = 'Alerte de température élevée'
-            message = f'La température est supérieure à {threshold_temperature2}, la température actuelle est de {temperature2} degrés.'
+            message = f'La température du Capteur2 est supérieure à {threshold_temperature2}, la température actuelle est de {temperature2} degrés.'
             from_email = 'toto81839@gmail.com'  # Remplacez par votre adresse e-mail d'envoi
             recipient_list = ['og67guittet@gmail.com']  # Remplacez par l'adresse du destinataire
             password = 'jhgg rpce xjxm meoa'  # Utilisez le mot de passe d'application que vous avez généré
